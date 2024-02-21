@@ -34,9 +34,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val widgetManager = AppWidgetManager.getInstance(this)
-
         val widgetProviders = widgetManager.getInstalledProvidersForPackage(packageName, null)
         setContent {
             ONEMBWidgetsTheme {
@@ -63,11 +61,7 @@ class MainActivity : ComponentActivity() {
 private fun WidgetInfoCard(providerInfo: AppWidgetProviderInfo) {
     val context = LocalContext.current
     val label = providerInfo.loadLabel(context.packageManager)
-    val description = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        providerInfo.loadDescription(context).toString()
-    } else {
-        "Description not available"
-    }
+    val description = "Screen unlocking\n counter widget"
     val preview = painterResource(id = providerInfo.previewImage)
     Card(
         modifier = Modifier

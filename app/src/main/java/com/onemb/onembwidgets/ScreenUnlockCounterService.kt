@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.IBinder
+import android.util.Log
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.onemb.onembwidgets.widgets.ScreenUnlockCounterReceiver
@@ -20,7 +21,11 @@ class ScreenUnlockCounterService : Service() {
         val editor = sharedPreferences.edit()
         editor.putBoolean("registered", false)
         editor.apply()
-        unregisterReceiver(receiver)
+        try {
+            unregisterReceiver(receiver)
+        } catch (e:Exception) {
+            Log.e("Error", e.message.toString())
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -43,7 +48,11 @@ class ScreenUnlockCounterService : Service() {
             editor.putBoolean("registered", true)
             editor.apply()
             val filter = IntentFilter(Intent.ACTION_USER_PRESENT)
-            registerReceiver(receiver, filter)
+            try {
+                registerReceiver(receiver, filter)
+            } catch (e:Exception) {
+                Log.e("Error", e.message.toString())
+            }
             val workRequest = OneTimeWorkRequestBuilder<ScreenUnlockWorker>()
                 .build()
             WorkManager.getInstance(this).enqueue(workRequest)

@@ -53,6 +53,7 @@ import com.onemb.onembwidgets.db.ScreenUnlockCounterDb
 import com.onemb.onembwidgets.db.ScreenUnlockCounterInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -118,11 +119,22 @@ class ScreenUnlockCounterWidget: GlanceAppWidget() {
                                             ContextCompat.RECEIVER_VISIBLE_TO_INSTANT_APPS
                                         )
                                     } else {
-                                        context.unregisterReceiver(receiver)
-                                        registerReceiver(
-                                            context, receiver, filter,
-                                            ContextCompat.RECEIVER_VISIBLE_TO_INSTANT_APPS
-                                        )
+                                        try {
+                                            context.unregisterReceiver(receiver)
+                                        } catch (e:Exception) {
+                                            Log.e("Error", e.message.toString())
+                                        }
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            delay(2000)
+                                            try {
+                                                registerReceiver(
+                                                    context, receiver, filter,
+                                                    ContextCompat.RECEIVER_VISIBLE_TO_INSTANT_APPS
+                                                )
+                                            } catch (e:Exception) {
+                                                Log.e("Error", e.message.toString())
+                                            }
+                                        }
                                     }
                                     val workRequest = OneTimeWorkRequestBuilder<ScreenUnlockWorker>()
                                         .build()

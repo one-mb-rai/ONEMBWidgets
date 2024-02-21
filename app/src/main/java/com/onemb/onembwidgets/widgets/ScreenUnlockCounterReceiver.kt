@@ -7,6 +7,9 @@ package com.onemb.onembwidgets.widgets
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.PowerManager
+import android.os.PowerManager.WakeLock
+import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.work.OneTimeWorkRequestBuilder
@@ -20,6 +23,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 /**
  * The ScreenUnlockCounterReceiver class extends GlanceAppWidgetReceiver and is responsible
@@ -91,7 +95,12 @@ class ScreenUnlockCounterReceiver: GlanceAppWidgetReceiver() {
 
     override fun onDisabled(context: Context) {
         super.onDisabled(context)
-        context.unregisterReceiver(this)
-        ScreenUnlockWorker.cancel(context)
+        try {
+            context.unregisterReceiver(this)
+            ScreenUnlockWorker.cancel(context)
+        } catch (e:Exception) {
+            Log.e("Error", e.message.toString())
+        }
+
     }
 }
