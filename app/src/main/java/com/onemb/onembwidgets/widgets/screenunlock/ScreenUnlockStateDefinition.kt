@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.onemb.onembwidgets.widgets
+package com.onemb.onembwidgets.widgets.screenunlock
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException

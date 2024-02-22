@@ -2,23 +2,23 @@
  * ScreenUnlockCounterReceiver is a receiver class extending GlanceAppWidgetReceiver,
  * designed for handling broadcast events related to screen unlocks.
  */
-package com.onemb.onembwidgets.widgets
+package com.onemb.onembwidgets.widgets.screenunlock
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.os.PowerManager
-import android.os.PowerManager.WakeLock
 import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.onemb.onembwidgets.ScreenUnlockCounterService
+import com.onemb.onembwidgets.GlobalWorker
 import com.onemb.onembwidgets.db.ScreenUnlockCounterDb
 import com.onemb.onembwidgets.db.ScreenUnlockCounterInterface
+import com.onemb.onembwidgets.services.ScreenUnlockCounterService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -67,7 +67,10 @@ class ScreenUnlockCounterReceiver: GlanceAppWidgetReceiver() {
         }
         CoroutineScope(Dispatchers.Default).launch {
             widgetUpdate(context)
+            delay(60000 * 5)
+            GlobalWorker.enqueue(context, false)
         }
+
     }
 
     private fun widgetUpdate(context: Context) {
@@ -101,6 +104,9 @@ class ScreenUnlockCounterReceiver: GlanceAppWidgetReceiver() {
         } catch (e:Exception) {
             Log.e("Error", e.message.toString())
         }
-
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(60000 * 5)
+            GlobalWorker.cancel(context)
+        }
     }
 }

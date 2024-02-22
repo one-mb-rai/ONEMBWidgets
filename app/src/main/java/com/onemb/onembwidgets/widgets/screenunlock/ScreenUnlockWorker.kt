@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.onemb.onembwidgets.widgets
+package com.onemb.onembwidgets.widgets.screenunlock
 
 import android.content.Context
 import androidx.glance.GlanceId
@@ -39,28 +39,6 @@ class ScreenUnlockWorker(
 
     companion object {
         private val uniqueWorkName = ScreenUnlockWorker::class.java.simpleName
-        /**
-         *
-         * @param force set to true to replace any ongoing work and expedite the request
-         */
-        fun enqueue(context: Context, force: Boolean = false) {
-            val manager = WorkManager.getInstance(context)
-            val requestBuilder = PeriodicWorkRequestBuilder<ScreenUnlockWorker>(
-                Duration.ofMinutes(30)
-            )
-            var workPolicy = ExistingPeriodicWorkPolicy.KEEP
-
-            // Replace any enqueued work and expedite the request
-            if (force) {
-                workPolicy = ExistingPeriodicWorkPolicy.UPDATE
-            }
-
-            manager.enqueueUniquePeriodicWork(
-                uniqueWorkName,
-                workPolicy,
-                requestBuilder.build()
-            )
-        }
 
         /**
          * Cancel any ongoing worker
@@ -69,8 +47,6 @@ class ScreenUnlockWorker(
             WorkManager.getInstance(context).cancelUniqueWork(uniqueWorkName)
         }
     }
-
-
 
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(context)

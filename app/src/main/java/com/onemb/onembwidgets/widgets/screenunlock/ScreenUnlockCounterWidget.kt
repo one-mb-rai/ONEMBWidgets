@@ -2,37 +2,26 @@
  * ScreenUnlockCounterWidget is a GlanceAppWidget responsible for displaying a screen unlock counter.
  * It uses a DataStore for persisting counter data and updates the counter on screen unlock events.
  */
-package com.onemb.onembwidgets.widgets
+package com.onemb.onembwidgets.widgets.screenunlock
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.LocalSize
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
-import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.currentState
@@ -48,26 +37,16 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.onemb.onembwidgets.MainActivity
-import com.onemb.onembwidgets.db.ScreenUnlockCounterDb
-import com.onemb.onembwidgets.db.ScreenUnlockCounterInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import kotlin.coroutines.CoroutineContext
 
 /**
  * ScreenUnlockCounterWidget is a GlanceAppWidget that displays the screen unlock counter.
  * It updates the counter on screen unlock events and provides a Glance theme for widget appearance.
  */
-@Suppress("PrivatePropertyName")
 class ScreenUnlockCounterWidget: GlanceAppWidget() {
 
     companion object {

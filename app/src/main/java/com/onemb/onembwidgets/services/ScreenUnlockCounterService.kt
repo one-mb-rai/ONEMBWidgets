@@ -1,4 +1,4 @@
-package com.onemb.onembwidgets
+package com.onemb.onembwidgets.services
 
 import android.annotation.SuppressLint
 import android.app.Service
@@ -9,8 +9,8 @@ import android.os.IBinder
 import android.util.Log
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.onemb.onembwidgets.widgets.ScreenUnlockCounterReceiver
-import com.onemb.onembwidgets.widgets.ScreenUnlockWorker
+import com.onemb.onembwidgets.widgets.screenunlock.ScreenUnlockCounterReceiver
+import com.onemb.onembwidgets.widgets.screenunlock.ScreenUnlockWorker
 
 class ScreenUnlockCounterService : Service() {
     private val receiver = ScreenUnlockCounterReceiver()

@@ -1,4 +1,4 @@
-package com.onemb.onembwidgets.widgets
+package com.onemb.onembwidgets.widgets.screenunlock
 
 import android.content.Context
 import androidx.compose.runtime.Composable

@@ -1,8 +1,9 @@
-package com.onemb.onembwidgets
+package com.onemb.onembwidgets.widgets.screenunlock
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.onemb.onembwidgets.services.ScreenUnlockCounterService
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {

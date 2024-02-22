@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package com.onemb.onembwidgets.widgets
+package com.onemb.onembwidgets.widgets.screenunlock
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 
 @Serializable
