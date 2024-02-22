@@ -3,4 +3,5 @@
     <string name="app_description">Screen Unlock Counter Widget</string>
     <string name="screen_timeout_widget_name">ONEMB Widgets</string>
     <string name="st_description">Screen timeout changer</string>
+    <string name="tile_screen_timeout">Screen timeout</string>
 </resources>

@@ -23,12 +23,14 @@
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".service.WirelessTileService"
+            android:name=".services.ScreenTimeoutService"
             android:enabled="true"
             android:exported="true"
-            android:icon="@drawable/ic_bug_24dp"
-            android:label="@string/title_wireless_debugging"
+            android:icon="@drawable/screen_timeout_tile"
+            android:label="@string/tile_screen_timeout"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <meta-data android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -57,18 +59,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/screen_unlock_counter_info" />
-        </receiver>
-        <receiver
-            android:name=".widgets.screentimeout.ScreenTimeoutReceiver"
-            android:enabled="true"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/screen_timeout_info" />
         </receiver>
         <receiver
             android:name=".widgets.screenunlock.BootReceiver"

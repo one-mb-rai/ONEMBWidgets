@@ -1,17 +1,17 @@
 package com.onemb.onembwidgets.services
 
-import android.os.Build
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import android.util.Log
-import androidx.annotation.RequiresApi
-import com.onemb.onembwidgets.repository.GlobalSettingsRepository
+import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository
 import kotlinx.coroutines.*
-import java.net.Inet4Address
-import java.net.NetworkInterface
 
 
 class ScreenTimeoutService : TileService() {
+
 
     private val uiJob = SupervisorJob()
     private val uiScope = CoroutineScope(Dispatchers.Main + uiJob)
@@ -19,14 +19,33 @@ class ScreenTimeoutService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
 
-//        GlobalSettingsRepository.update()
+        ScreenTimeoutSettingsRepository.update()
         uiScope.launch {
+            ScreenTimeoutSettingsRepository.screenTimeoutState.collect {
+                updateTileState(it)
+            }
+        }
+    }
 
-//            GlobalSettingsRepository.wirelessDebugState.collect {
-//                updateTileState(it)
-//                val ipAddress = if(it) retrieveDeviceIpAddress() else ""
-//                updateServiceLabel(ipAddress)
-//            }
+    private fun changeScreenTimeout(timeout: Int, context : Context) {
+        try {
+            val contentResolver = context.contentResolver
+
+            if(Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) <= 120000) {
+                Settings.System.putInt(
+                    contentResolver,
+                    Settings.System.SCREEN_OFF_TIMEOUT,
+                    timeout
+                )
+            } else {
+                Settings.System.putInt(
+                    contentResolver,
+                    Settings.System.SCREEN_OFF_TIMEOUT,
+                    120000
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -39,40 +58,26 @@ class ScreenTimeoutService : TileService() {
         super.onClick()
 
         qsTile?.let {
-            GlobalSettingsRepository.isWirelessDebugEnabled = !GlobalSettingsRepository.isWirelessDebugEnabled
+            ScreenTimeoutSettingsRepository.isScreenTimeoutState = !ScreenTimeoutSettingsRepository.isScreenTimeoutState
+            if (Settings.System.canWrite(applicationContext)) {
+                changeScreenTimeout(ScreenTimeoutSettingsRepository.screenTimeout, this);
+            } else {
+                val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.setData(Uri.parse("package:" + applicationContext.packageName))
+                applicationContext.startActivity(intent)
+            }
         }
     }
 
-    private fun updateTileState(isWirelessDebuggingOn: Boolean) {
+    private fun updateTileState(tileActive: Boolean) {
         qsTile?.let {
-            if (isWirelessDebuggingOn) {
+            if (tileActive) {
                 it.state = Tile.STATE_ACTIVE
             } else {
                 it.state = Tile.STATE_INACTIVE
             }
             it.updateTile()
-        }
-    }
-
-    private fun retrieveDeviceIpAddress(): String? {
-        var serviceName: String? = null
-        NetworkInterface.getNetworkInterfaces()?.toList()?.map { networkInterface ->
-            networkInterface.inetAddresses?.toList()?.find {
-                !it.isLoopbackAddress && it is Inet4Address
-            }?.let { inetAddress ->
-                inetAddress.hostAddress?.let { Log.d("IP", it) }
-                serviceName = inetAddress.hostAddress
-            }
-        }
-        return serviceName
-    }
-
-    private fun updateServiceLabel(ipAddress: String?) {
-        val tile = qsTile
-        if (tile != null) {
-            val ip = if(ipAddress !="") "($ipAddress:5555)" else ""
-            tile.label = "Wireless Debugging$ip"
-            tile.updateTile()
         }
     }
 }
