@@ -6,6 +6,8 @@ import android.net.Uri
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import android.util.Log
+import com.onemb.onembwidgets.MyApplication
 import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository
 import kotlinx.coroutines.*
 
@@ -27,23 +29,27 @@ class ScreenTimeoutService : TileService() {
         }
     }
 
+    private fun getTimeout(timeout: Int): Long {
+        val value: Long = when (timeout) {
+            15000 -> 15000 * 2 // 30 sec
+            30000 -> 15000 * 4 // 1 min
+            60000 -> 15000 * 8 // 2 min
+            120000 -> 15000 * 12 // 3 min
+            180000 -> 15000 * 20 // 5 min
+            else -> {
+                30000
+            }
+        }
+        return value
+    }
+
     private fun changeScreenTimeout(timeout: Int, context : Context) {
         try {
             val contentResolver = context.contentResolver
-
-            if(Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) <= 120000) {
-                Settings.System.putInt(
-                    contentResolver,
-                    Settings.System.SCREEN_OFF_TIMEOUT,
-                    timeout
-                )
-            } else {
-                Settings.System.putInt(
-                    contentResolver,
-                    Settings.System.SCREEN_OFF_TIMEOUT,
-                    120000
-                )
-            }
+            Log.d("TIME", Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT).toString())
+            Log.d("TIMEOUT", getTimeout(timeout).toString())
+//            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, Integer.MAX_VALUE);
+            Settings.Global.putInt(getContentResolver(), Settings.Global.STAY_ON_WHILE_PLUGGED_IN, Integer.MAX_VALUE)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -60,7 +66,7 @@ class ScreenTimeoutService : TileService() {
         qsTile?.let {
             ScreenTimeoutSettingsRepository.isScreenTimeoutState = !ScreenTimeoutSettingsRepository.isScreenTimeoutState
             if (Settings.System.canWrite(applicationContext)) {
-                changeScreenTimeout(ScreenTimeoutSettingsRepository.screenTimeout, this);
+                changeScreenTimeout(ScreenTimeoutSettingsRepository.screenTimeout, MyApplication.getAppContext());
             } else {
                 val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

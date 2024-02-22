@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 object ScreenTimeoutSettingsRepository {
 
-    const val screenTimeout = 60000000
+    var screenTimeout = 15000
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, ex ->
         if (ex !is CancellationException) {
             Log.e("GlobalSettingsRepository", "Coroutine exception", ex)
@@ -21,7 +21,7 @@ object ScreenTimeoutSettingsRepository {
 
     var isScreenTimeoutState: Boolean
         get() = try {
-            Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) > 120000
+            Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) > 15000
         } catch (e: Exception) {
             e.printStackTrace()
             false

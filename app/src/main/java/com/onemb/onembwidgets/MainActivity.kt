@@ -13,7 +13,6 @@ import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository
 class MainActivity : ComponentActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            ScreenTimeoutSettingsRepository.init(this)
             setContent {
                 Scaffold {
                     Box(Modifier.padding(it)) {
