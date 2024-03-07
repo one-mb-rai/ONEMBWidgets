@@ -43,13 +43,15 @@ class ScreenTimeoutService : TileService() {
         return value
     }
 
-    private fun changeScreenTimeout(timeout: Int, context : Context) {
+    fun changeScreenTimeout(context : Context) {
         try {
             val contentResolver = context.contentResolver
+            if(Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) <= 15000) {
+                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 300000);
+            } else {
+                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 15000);
+            }
             Log.d("TIME", Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT).toString())
-            Log.d("TIMEOUT", getTimeout(timeout).toString())
-//            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, Integer.MAX_VALUE);
-            Settings.Global.putInt(getContentResolver(), Settings.Global.STAY_ON_WHILE_PLUGGED_IN, Integer.MAX_VALUE)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -66,7 +68,7 @@ class ScreenTimeoutService : TileService() {
         qsTile?.let {
             ScreenTimeoutSettingsRepository.isScreenTimeoutState = !ScreenTimeoutSettingsRepository.isScreenTimeoutState
             if (Settings.System.canWrite(applicationContext)) {
-                changeScreenTimeout(ScreenTimeoutSettingsRepository.screenTimeout, MyApplication.getAppContext());
+                changeScreenTimeout(MyApplication.getAppContext());
             } else {
                 val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
