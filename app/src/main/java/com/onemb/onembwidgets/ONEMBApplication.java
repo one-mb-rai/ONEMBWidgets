@@ -4,19 +4,24 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
+import com.onemb.onembwidgets.repository.WifiAdbRepository;
+
 import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository;
 
-public class MyApplication extends Application {
+public class ONEMBApplication extends Application {
     @SuppressLint("StaticFieldLeak")
     private static Context context;
 
     public void onCreate() {
         super.onCreate();
-        MyApplication.context = getApplicationContext();
-        ScreenTimeoutSettingsRepository.INSTANCE.init(MyApplication.context);
+
+        ONEMBApplication.context = getApplicationContext();
+        ScreenTimeoutSettingsRepository.INSTANCE.init(ONEMBApplication.context);
+        WifiAdbRepository.INSTANCE.init(ONEMBApplication.context);
     }
 
     public static Context getAppContext() {
-        return MyApplication.context;
+        return ONEMBApplication.context;
     }
+
 }

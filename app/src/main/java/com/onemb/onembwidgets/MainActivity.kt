@@ -1,10 +1,12 @@
 package com.onemb.onembwidgets
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,8 +32,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository
 import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository.contentResolver
+import android.Manifest.permission.WRITE_SECURE_SETTINGS
 
 
 class MainActivity : ComponentActivity() {
@@ -44,16 +49,16 @@ class MainActivity : ComponentActivity() {
                     Box(Modifier.padding(it)) {
                         var isPermissionAvailable = remember {mutableStateOf(false)}
 
-                        if (Settings.System.canWrite(MyApplication.getAppContext())) {
+                        if (Settings.System.canWrite(ONEMBApplication.getAppContext())) {
                             isPermissionAvailable.value = true
                             Settings.System.putInt(ScreenTimeoutSettingsRepository.contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 300000);
                             val text = "You have the permission now"
                             val duration = Toast.LENGTH_SHORT
 
-                            val toast = Toast.makeText(MyApplication.getAppContext(), text, duration)
+                            val toast = Toast.makeText(ONEMBApplication.getAppContext(), text, duration)
                             toast.show()
                         }
-                        MainActivityView(isPermissionAvailable)
+                        MainActivityView(isPermissionAvailable, this@MainActivity)
                     }
                 }
             }
@@ -62,7 +67,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainActivityView(isPermissionAvailable: MutableState<Boolean>) {
+fun MainActivityView(isPermissionAvailable: MutableState<Boolean>, activity: Activity) {
     Column {
         Card(
             modifier = Modifier
@@ -103,7 +108,7 @@ fun MainActivityView(isPermissionAvailable: MutableState<Boolean>) {
                 if(!isPermissionAvailable.value) {
                     Button(
                         onClick = {
-                            if (Settings.System.canWrite(MyApplication.getAppContext())) {
+                            if (Settings.System.canWrite(ONEMBApplication.getAppContext())) {
                                 isPermissionAvailable.value = true;
                                 Settings.System.putInt(
                                     contentResolver,
@@ -114,13 +119,13 @@ fun MainActivityView(isPermissionAvailable: MutableState<Boolean>) {
                                 val duration = Toast.LENGTH_SHORT
 
                                 val toast =
-                                    Toast.makeText(MyApplication.getAppContext(), text, duration)
+                                    Toast.makeText(ONEMBApplication.getAppContext(), text, duration)
                                 toast.show()
                             } else {
                                 val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                intent.setData(Uri.parse("package:" + MyApplication.getAppContext().packageName))
-                                MyApplication.getAppContext().startActivity(intent)
+                                intent.setData(Uri.parse("package:" + ONEMBApplication.getAppContext().packageName))
+                                ONEMBApplication.getAppContext().startActivity(intent)
                             }
                         },
                         modifier = Modifier
@@ -168,6 +173,47 @@ fun MainActivityView(isPermissionAvailable: MutableState<Boolean>) {
                     text = "helps user to record number of times user has unlocked their phone's screen",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.inverseSurface
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+
+        Card(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 24.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "We also have a quick tile setting",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.inverseSurface
+                )
+                Text(
+                    text = "Wireless ADB",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Text(
+                    text = "To enable the service we need special permission. Please execute below command from you PC",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.inverseSurface
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "adb shell pm grant com.onemb.onembwidgets android.permission.WRITE_SECURE_SETTINGS",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }

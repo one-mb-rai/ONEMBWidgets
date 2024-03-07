@@ -4,4 +4,5 @@
     <string name="screen_timeout_widget_name">ONEMB Widgets</string>
     <string name="st_description">Screen timeout changer</string>
     <string name="tile_screen_timeout">Screen timeout</string>
+    <string name="title_wireless_debugging">Wireless Debugging</string>
 </resources>

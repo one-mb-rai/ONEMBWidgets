@@ -7,7 +7,7 @@ import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
-import com.onemb.onembwidgets.MyApplication
+import com.onemb.onembwidgets.ONEMBApplication
 import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository
 import kotlinx.coroutines.*
 
@@ -43,7 +43,7 @@ class ScreenTimeoutService : TileService() {
         return value
     }
 
-    fun changeScreenTimeout(context : Context) {
+    private fun changeScreenTimeout(context : Context) {
         try {
             val contentResolver = context.contentResolver
             if(Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) <= 15000) {
@@ -68,7 +68,7 @@ class ScreenTimeoutService : TileService() {
         qsTile?.let {
             ScreenTimeoutSettingsRepository.isScreenTimeoutState = !ScreenTimeoutSettingsRepository.isScreenTimeoutState
             if (Settings.System.canWrite(applicationContext)) {
-                changeScreenTimeout(MyApplication.getAppContext());
+                changeScreenTimeout(ONEMBApplication.getAppContext());
             } else {
                 val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
