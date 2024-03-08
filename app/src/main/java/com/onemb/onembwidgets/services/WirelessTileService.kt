@@ -1,6 +1,9 @@
 package com.onemb.onembwidgets.services
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
@@ -25,15 +28,31 @@ class WirelessTileService : TileService() {
                 updateTileState(it)
                 CoroutineScope(Dispatchers.IO).launch {
                     if(it) {
-                        val intent = Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        this@WirelessTileService.startActivity(intent)
+                        if(!isWirelessADBConnected(applicationContext)) {
+                            val intent = Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            this@WirelessTileService.startActivity(intent)
+                        }
                     }
                     val ipAddress = if (it) retrieveDeviceIpAddress() else ""
                     updateServiceLabel(ipAddress)
                 }
             }
         }
+    }
+
+    private fun isWirelessADBConnected(context: Context): Boolean {
+        val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = cm.activeNetwork
+        if (network != null) {
+            val capabilities = cm.getNetworkCapabilities(network)
+            if (capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.d("WirelessADBChecker", "Connected to Wi-Fi")
+                return true
+            }
+        }
+        Log.d("WirelessADBChecker", "Not connected to Wi-Fi")
+        return false
     }
 
     override fun onDestroy() {

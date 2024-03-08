@@ -25,7 +25,7 @@ object ScreenTimeoutSettingsRepository {
             e.printStackTrace()
             false
         }
-        set(value) {
+        set(_) {
             ioScope.launch {
                 screenTimeoutState.emit(isScreenTimeoutState)
             }

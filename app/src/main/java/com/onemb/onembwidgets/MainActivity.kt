@@ -47,23 +47,16 @@ class MainActivity : ComponentActivity() {
             setContent {
                 Scaffold {
                     Box(Modifier.padding(it)) {
-                        var isPermissionAvailable = remember {mutableStateOf(false)}
+                        val isPermissionAvailable = remember {mutableStateOf(false)}
 
                         if (Settings.System.canWrite(ONEMBApplication.getAppContext())) {
                             isPermissionAvailable.value = true
-                            Settings.System.putInt(ScreenTimeoutSettingsRepository.contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 300000);
-                            val text = "You have the permission now"
-                            val duration = Toast.LENGTH_SHORT
-
-                            val toast = Toast.makeText(ONEMBApplication.getAppContext(), text, duration)
-                            toast.show()
                         }
                         MainActivityView(isPermissionAvailable, this@MainActivity)
                     }
                 }
             }
         }
-
 }
 
 @Composable
@@ -194,7 +187,7 @@ fun MainActivityView(isPermissionAvailable: MutableState<Boolean>, activity: Act
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "We also have a quick tile setting",
+                    text = "We have another quick tile setting",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.inverseSurface
                 )
