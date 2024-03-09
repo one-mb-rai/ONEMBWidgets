@@ -1,15 +1,18 @@
 package com.onemb.onembwidgets
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
+import android.telephony.TelephonyManager
+import android.telephony.TelephonyManager.NETWORK_TYPE_BITMASK_NR
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,18 +35,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository
 import com.onemb.onembwidgets.repository.ScreenTimeoutSettingsRepository.contentResolver
-import android.Manifest.permission.WRITE_SECURE_SETTINGS
 
 
 class MainActivity : ComponentActivity() {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
-
+            setNetworkModeToNR_ONLY(this)
             setContent {
                 Scaffold {
                     Box(Modifier.padding(it)) {
@@ -57,6 +57,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+}
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+fun setNetworkModeToNR_ONLY(context: Context) {
+    val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+    telephonyManager.setAllowedNetworkTypesForReason(TelephonyManager.ALLOWED_NETWORK_TYPES_REASON_USER, NETWORK_TYPE_BITMASK_NR)
 }
 
 @Composable
