@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/app_name"
-    android:minHeight="70dp"
-    android:minWidth="200dp"
     android:resizeMode="horizontal"
+    android:minWidth="100dp"
+    android:minHeight="100dp"
     android:previewImage="@drawable/widget_view_removebg_preview"
     android:initialLayout="@layout/glance_default_loading_layout"
     android:widgetCategory="home_screen"
