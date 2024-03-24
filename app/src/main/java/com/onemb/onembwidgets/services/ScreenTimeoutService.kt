@@ -47,9 +47,9 @@ class ScreenTimeoutService : TileService() {
         try {
             val contentResolver = context.contentResolver
             if(Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) <= 15000) {
-                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 300000);
+                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, Int.MAX_VALUE);
             } else {
-                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 15000);
+                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, Int.MIN_VALUE);
             }
             Log.d("TIME", Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT).toString())
         } catch (e: Exception) {

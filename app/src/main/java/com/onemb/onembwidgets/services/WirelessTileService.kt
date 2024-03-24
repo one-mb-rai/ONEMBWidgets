@@ -1,5 +1,6 @@
 package com.onemb.onembwidgets.services
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -10,6 +11,8 @@ import android.service.quicksettings.TileService
 import android.util.Log
 import com.onemb.onembwidgets.repository.WifiAdbRepository
 import kotlinx.coroutines.*
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
 import java.net.Inet4Address
 import java.net.NetworkInterface
 
@@ -47,11 +50,9 @@ class WirelessTileService : TileService() {
         if (network != null) {
             val capabilities = cm.getNetworkCapabilities(network)
             if (capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                Log.d("WirelessADBChecker", "Connected to Wi-Fi")
                 return true
             }
         }
-        Log.d("WirelessADBChecker", "Not connected to Wi-Fi")
         return false
     }
 
@@ -85,19 +86,19 @@ class WirelessTileService : TileService() {
             networkInterface.inetAddresses?.toList()?.find {
                 !it.isLoopbackAddress && it is Inet4Address
             }?.let { inetAddress ->
-                inetAddress.hostAddress?.let {
-                    Log.d("IP", it)
-                }
                 serviceName = inetAddress.hostAddress
             }
         }
+
         return serviceName
     }
+
 
     private fun updateServiceLabel(ipAddress: String?) {
         val tile = qsTile
         if (tile != null) {
-            tile.label = "Wireless Debugging$ipAddress"
+            tile.label = "W - ADB"
+            tile.subtitle = ipAddress.toString()
             tile.updateTile()
         }
     }

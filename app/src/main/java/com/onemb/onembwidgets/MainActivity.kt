@@ -43,7 +43,6 @@ class MainActivity : ComponentActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
-            setNetworkModeToNR_ONLY(this)
             setContent {
                 Scaffold {
                     Box(Modifier.padding(it)) {
@@ -57,12 +56,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-}
-
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-fun setNetworkModeToNR_ONLY(context: Context) {
-    val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    telephonyManager.setAllowedNetworkTypesForReason(TelephonyManager.ALLOWED_NETWORK_TYPES_REASON_USER, NETWORK_TYPE_BITMASK_NR)
 }
 
 @Composable
