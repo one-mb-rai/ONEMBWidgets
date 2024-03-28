@@ -58,6 +58,7 @@ class ScreenUnlockWorker(
 
             val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             val data = ScreenUnlockData(0, "", 0)
+
             data.counter = counterDao.getCounterByDate(currentDate)?.counter ?: 0
             data.date = counterDao.getCounterByDate(currentDate)?.date ?: ""
             data.id = counterDao.getCounterByDate(currentDate)?.id ?: 0

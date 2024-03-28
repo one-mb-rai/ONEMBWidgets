@@ -6,4 +6,5 @@
     <string name="st_description">Screen timeout changer</string>
     <string name="tile_screen_timeout">Screen timeout</string>
     <string name="title_wireless_debugging">Wireless Debugging</string>
+    <integer name="update_interval">1800000</integer>
 </resources>

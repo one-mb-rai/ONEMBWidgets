@@ -48,7 +48,7 @@ class GlobalWorker(
         fun enqueue(context: Context, force: Boolean = false) {
             val manager = WorkManager.getInstance(context)
             val requestBuilder = PeriodicWorkRequestBuilder<GlobalWorker>(
-                Duration.ofMinutes(5)
+                Duration.ofMinutes(4)
             )
             var workPolicy = ExistingPeriodicWorkPolicy.KEEP
 
